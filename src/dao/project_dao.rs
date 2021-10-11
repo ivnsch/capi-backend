@@ -119,33 +119,33 @@ impl ProjectDao for ProjectDaoImpl {
                     count: get_u64(project_row, 4)?,
                 },
             },
-            creator: get_address(&project_row, 5)?,
+            creator: get_address(project_row, 5)?,
             shares_asset_id: get_u64(project_row, 6)?,
             votes_asset_id: get_u64(project_row, 7)?,
             central_app_id: get_u64(project_row, 8)?,
             invest_escrow: ContractAccount {
-                address: get_address(&project_row, 9)?,
-                program: get_bytes(&project_row, 10)?,
+                address: get_address(project_row, 9)?,
+                program: get_bytes(project_row, 10)?,
             },
             staking_escrow: ContractAccount {
-                address: get_address(&project_row, 11)?,
-                program: get_bytes(&project_row, 12)?,
+                address: get_address(project_row, 11)?,
+                program: get_bytes(project_row, 12)?,
             },
             central_escrow: ContractAccount {
-                address: get_address(&project_row, 13)?,
-                program: get_bytes(&project_row, 14)?,
+                address: get_address(project_row, 13)?,
+                program: get_bytes(project_row, 14)?,
             },
             customer_escrow: ContractAccount {
-                address: get_address(&project_row, 15)?,
-                program: get_bytes(&project_row, 16)?,
+                address: get_address(project_row, 15)?,
+                program: get_bytes(project_row, 16)?,
             },
             votein_escrow: ContractAccount {
-                address: get_address(&project_row, 17)?,
-                program: get_bytes(&project_row, 18)?,
+                address: get_address(project_row, 17)?,
+                program: get_bytes(project_row, 18)?,
             },
             vote_out_escrow: ContractAccount {
-                address: get_address(&project_row, 19)?,
-                program: get_bytes(&project_row, 20)?,
+                address: get_address(project_row, 19)?,
+                program: get_bytes(project_row, 20)?,
             },
         })
     }

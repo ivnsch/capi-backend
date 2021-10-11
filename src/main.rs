@@ -180,13 +180,13 @@ async fn handle_get_project(
 
 fn project_for_users_json(res: Result<ProjectForUsers>) -> Result<impl warp::Reply, Infallible> {
     let json_res = res
-        .map(|r| ProjectForUsersJson::from(r))
+        .map(ProjectForUsersJson::from)
         .map_err(|e| e.to_string());
     Ok(warp::reply::json(&json_res))
 }
 
 fn project_json(res: Result<Project>) -> Result<impl warp::Reply, Infallible> {
-    let json_res = res.map(|r| ProjectJson::from(r)).map_err(|e| e.to_string());
+    let json_res = res.map(ProjectJson::from).map_err(|e| e.to_string());
     Ok(warp::reply::json(&json_res))
 }
 
