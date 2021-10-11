@@ -944,7 +944,7 @@ dependencies = [
 [[package]]
 name = "logger"
 version = "0.1.0"
-source = "git+https://github.com/ivanschuetz/logger?branch=main#32b98f86010c9d48e7d10759e3d05af31993e091"
+source = "git+ssh://git@github.com/ivanschuetz/logger.git?branch=main#32b98f86010c9d48e7d10759e3d05af31993e091"
 dependencies = [
  "log4rs",
 ]
@@ -952,7 +952,7 @@ dependencies = [
 [[package]]
 name = "make"
 version = "0.1.0"
-source = "git+https://github.com/ivanschuetz/make?branch=main#8c3ff2295ab027cef4ccde2ff5d10080136e6360"
+source = "git+ssh://git@github.com/ivanschuetz/make?branch=main#8c3ff2295ab027cef4ccde2ff5d10080136e6360"
 dependencies = [
  "algonaut",
  "anyhow",
