@@ -9,6 +9,7 @@ pub async fn save_withdrawal_request(
 ) -> Result<SavedWithdrawalRequest> {
     let request = WithdrawalRequest {
         project_id: request.project_id.clone(),
+        slot_id: request.slot_id.clone(),
         amount: request.amount,
         description: request.description.clone(),
         date: Utc::now(),
