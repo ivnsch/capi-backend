@@ -969,7 +969,7 @@ dependencies = [
 [[package]]
 name = "logger"
 version = "0.1.0"
-source = "git+https://github.com/ivanschuetz/logger?branch=main#32b98f86010c9d48e7d10759e3d05af31993e091"
+source = "git+https://github.com/ivanschuetz/logger?branch=main#f2d00cd43ced69ea9392588fadc60d86207f1859"
 dependencies = [
  "log4rs",
 ]
