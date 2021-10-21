@@ -232,7 +232,7 @@ async fn handle_get_withdrawal_requests(
 fn frontend_host(env: &Env) -> &'static str {
     match env {
         Env::Local => "http://localhost:3000",
-        Env::Test => "http://app.venturist.finance",
+        Env::Test => "http://test.app.nibble.money",
     }
 }
 
