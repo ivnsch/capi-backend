@@ -32,6 +32,7 @@ fn to_project_for_users(env: &Env, project_id: &str, project: &Project) -> Proje
         id: project_id.to_owned(),
         name: project.specs.name.clone(),
         asset_price: project.specs.asset_price,
+        investors_share: project.specs.investors_share,
         vote_threshold: project.specs.vote_threshold, // percent
         shares_asset_id: project.shares_asset_id,
         central_app_id: project.central_app_id,
