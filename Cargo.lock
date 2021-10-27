@@ -182,7 +182,7 @@ dependencies = [
  "data-encoding",
  "dotenv",
  "log",
- "logger",
+ "log4rs",
  "make",
  "serde",
  "serde_json",
@@ -923,14 +923,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "logger"
-version = "0.1.0"
-source = "git+https://github.com/ivanschuetz/logger?branch=main#f2d00cd43ced69ea9392588fadc60d86207f1859"
-dependencies = [
- "log4rs",
-]
-
-[[package]]
 name = "make"
 version = "0.1.0"
 source = "git+https://github.com/ivanschuetz/make?branch=main#9809116407f7265dae1244ae97ffdde0dd40adf2"
@@ -943,7 +935,7 @@ dependencies = [
  "gloo-timers",
  "instant",
  "log",
- "logger",
+ "log4rs",
  "rmp-serde",
  "serde",
  "tealdbg",

@@ -23,6 +23,7 @@ use dotenv::dotenv;
 use std::env;
 
 mod dao;
+mod logger;
 
 #[tokio::main]
 async fn main() -> Result<()> {

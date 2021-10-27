@@ -11,9 +11,7 @@ make = { git = "https://github.com/ivanschuetz/make", branch = "main" }
 # make = { git = "ssh://git@github.com/ivanschuetz/make.git", branch = "main" }
 # algonaut = { path = "/Users/ischuetz/dev/github/algonaut" }
 algonaut = { git = "https://github.com/manuelmauro/algonaut", branch = "main", features = ["rustls"], default-features = false }
-# logger = { path = "./logger" }
-logger = { git = "https://github.com/ivanschuetz/logger", branch = "main" }
-# logger = { git = "ssh://git@github.com/ivanschuetz/logger.git", branch = "main" }
+
 anyhow = "1.0"
 serde = {version = "1.0", features = ["derive"]}
 warp = "0.3"
@@ -25,3 +23,4 @@ data-encoding = "2.3.2"
 serde_json = "1.0.64"
 chrono = "0.4.19"
 dotenv = "0.10.0"
+log4rs = "0.12.0"
