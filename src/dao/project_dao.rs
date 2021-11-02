@@ -4,7 +4,7 @@ use algonaut::transaction::account::ContractAccount;
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
 use data_encoding::BASE64;
-use make::flows::create_project::model::{CreateProjectSpecs, CreateSharesSpecs, Project};
+use core_::flows::create_project::model::{CreateProjectSpecs, CreateSharesSpecs, Project};
 use tokio_postgres::Client;
 
 use super::db::{get_address, get_bytes, get_microalgos, get_u64};
@@ -155,10 +155,9 @@ mod test {
     use std::{convert::TryInto, sync::Arc};
 
     use super::{ProjectDao, ProjectDaoImpl};
-    use crate::dao::db::create_db_client;
+    use crate::{dao::db::create_db_client, logger::init_logger};
     use anyhow::{Error, Result};
-    use logger::init_logger;
-    use make::api::json_workaround::ProjectJson;
+    use core_::api::json_workaround::ProjectJson;
     use tokio::test;
 
     #[test]

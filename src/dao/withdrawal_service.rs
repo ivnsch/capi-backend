@@ -1,7 +1,7 @@
 use super::withdrawal_dao::WithdrawalDao;
 use anyhow::Result;
 use chrono::Utc;
-use make::api::model::{SavedWithdrawalRequest, WithdrawalRequest, WithdrawalRequestInputs};
+use core_::api::model::{SavedWithdrawalRequest, WithdrawalRequest, WithdrawalRequestInputs};
 
 pub async fn save_withdrawal_request(
     dao: &dyn WithdrawalDao,

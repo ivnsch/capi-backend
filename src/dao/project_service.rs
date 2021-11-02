@@ -1,5 +1,5 @@
 use anyhow::Result;
-use make::{api::model::ProjectForUsers, flows::create_project::model::Project};
+use core_::{api::model::ProjectForUsers, flows::create_project::model::Project};
 
 use crate::{frontend_host, Env};
 

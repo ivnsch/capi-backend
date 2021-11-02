@@ -2,7 +2,7 @@ use super::db::get_u64;
 use algonaut::core::MicroAlgos;
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
-use make::api::model::{SavedWithdrawalRequest, WithdrawalRequest};
+use core_::api::model::{SavedWithdrawalRequest, WithdrawalRequest};
 use std::sync::Arc;
 use tokio_postgres::{Client, Row};
 
@@ -133,16 +133,15 @@ impl WithdrawalDao for WithdrawalDaoImpl {
 mod test {
     use std::{convert::TryInto, sync::Arc};
 
-    use crate::dao::{
+    use crate::{dao::{
         db::create_db_client,
         project_dao::{ProjectDao, ProjectDaoImpl},
-    };
+    }, logger::init_logger};
     use algonaut::core::MicroAlgos;
     use anyhow::{Error, Result};
     use chrono::Utc;
-    use logger::init_logger;
-    use make::api::json_workaround::ProjectJson;
-    use make::api::model::WithdrawalRequest;
+    use core_::api::json_workaround::ProjectJson;
+    use core_::api::model::WithdrawalRequest;
     use tokio::test;
 
     use super::{WithdrawalDao, WithdrawalDaoImpl};
