@@ -33,10 +33,8 @@ fn to_project_for_users(env: &Env, project_id: &str, project: &Project) -> Proje
         name: project.specs.name.clone(),
         asset_price: project.specs.asset_price,
         investors_share: project.specs.investors_share,
-        vote_threshold: project.specs.vote_threshold, // percent
         shares_asset_id: project.shares_asset_id,
         central_app_id: project.central_app_id,
-        slot_ids: project.withdrawal_slot_ids.clone(),
         invest_escrow_address: project.invest_escrow.address,
         staking_escrow_address: project.staking_escrow.address,
         central_escrow_address: project.central_escrow.address,
