@@ -8,7 +8,7 @@ edition = "2018"
 [dependencies]
 # Note _ suffix: only "core" causes a conflic with async-trait (unclear reason, could have a better solution)
 core_ = { package = "core", path = "./core" } 
-# core_ = { package = "core", git = "ssh://git@github.com/ivanschuetz/nibble-core.git", branch = "main" }
+# core_ = { package = "core", git = "ssh://git@github.com/ivanschuetz/capi-core.git", branch = "main" }
 
 # algonaut = { path = "/Users/ischuetz/dev/github/algonaut" }
 algonaut = { git = "https://github.com/manuelmauro/algonaut", branch = "main", features = ["rustls"], default-features = false }
