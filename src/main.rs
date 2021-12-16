@@ -4,15 +4,15 @@ use std::{
 };
 
 use anyhow::Result;
-use dao::{project_dao::ProjectDao, withdrawal_dao::WithdrawalDao};
-use logger::init_logger;
 use core_::{
     api::{
         json_workaround::{ProjectForUsersJson, ProjectJson},
-        model::{ProjectForUsers, WithdrawalRequestInputs},
+        model::{ProjectForUsers, WithdrawalInputs},
     },
     flows::create_project::model::Project,
 };
+use dao::{project_dao::ProjectDao, withdrawal_dao::WithdrawalDao};
+use logger::init_logger;
 use warp::Filter;
 
 use crate::dao::{
@@ -85,44 +85,33 @@ async fn main() -> Result<()> {
         .with(cors.clone())
         .with(warp::log("get load_project log"));
 
-    let save_withdrawal_request = warp::post()
+    let save_withdrawal = warp::post()
         .and(warp::path!("withdraw"))
         .and(warp::body::json())
         .and(with_withdrawal_dao(withdrawal_dao.clone()))
         .and_then(
-            |request: WithdrawalRequestInputs, dao: Arc<dyn WithdrawalDao>| async {
-                handle_save_withdrawal_request(dao, request).await
+            |inputs: WithdrawalInputs, dao: Arc<dyn WithdrawalDao>| async {
+                handle_save_withdrawal(dao, inputs).await
             },
         )
         .with(cors.clone())
-        .with(warp::log("post save_withdrawal_request log"));
+        .with(warp::log("post save_withdrawal log"));
 
-    let load_withdrawal_requests = warp::get()
+    let load_withdrawals = warp::get()
         .and(warp::path!("withdrawals" / String))
         .and(with_withdrawal_dao(withdrawal_dao.clone()))
         .and_then(|id: String, dao: Arc<dyn WithdrawalDao>| async {
-            handle_get_withdrawal_requests(dao, id).await
+            handle_get_withdrawals(dao, id).await
         })
         .with(cors.clone())
-        .with(warp::log("get load_withdrawal_requests log"));
-
-    // hack
-    let complete_withdrawal_request = warp::post()
-        .and(warp::path!("complete_withdrawal" / String))
-        .and(with_withdrawal_dao(withdrawal_dao))
-        .and_then(|id: String, dao: Arc<dyn WithdrawalDao>| async {
-            handle_complete_withdrawal_request(dao, id).await
-        })
-        .with(cors.clone())
-        .with(warp::log("get complete_withdrawal_request log"));
+        .with(warp::log("get load_withdrawals log"));
 
     warp::serve(
         save_project
             .or(invest_project)
             .or(load_project)
-            .or(save_withdrawal_request)
-            .or(load_withdrawal_requests)
-            .or(complete_withdrawal_request),
+            .or(save_withdrawal)
+            .or(load_withdrawals),
     )
     // .run(([127, 0, 0, 1], 3030))
     .run(([0, 0, 0, 0], 3030))
@@ -191,42 +180,27 @@ fn project_json(res: Result<Project>) -> Result<impl warp::Reply, Infallible> {
     Ok(warp::reply::json(&json_res))
 }
 
-async fn handle_save_withdrawal_request(
+async fn handle_save_withdrawal(
     withdrawal_dao: Arc<dyn WithdrawalDao>,
-    request: WithdrawalRequestInputs,
+    withdrawal: WithdrawalInputs,
 ) -> Result<impl warp::Reply, Infallible> {
-    log::debug!("json: {}", serde_json::to_string(&request).unwrap());
-    let res = withdrawal_service::save_withdrawal_request(&*withdrawal_dao, &request)
+    log::debug!("json: {}", serde_json::to_string(&withdrawal).unwrap());
+    let res = withdrawal_service::save_withdrawal(&*withdrawal_dao, &withdrawal)
         .await
         .map_err(|e| e.to_string());
-    log::debug!("handle_save_withdrawal_request res: {:?}", res);
+    log::debug!("handle_save_withdrawal res: {:?}", res);
     Ok(warp::reply::json(&res))
     // Ok(warp::reply()) // empty reply
 }
 
-async fn handle_complete_withdrawal_request(
-    withdrawal_dao: Arc<dyn WithdrawalDao>,
-    request_id: String,
-) -> Result<impl warp::Reply, Infallible> {
-    log::debug!(
-        "request_id: {}",
-        serde_json::to_string(&request_id).unwrap()
-    );
-    let res = withdrawal_service::complete_withdrawal_request(&*withdrawal_dao, &request_id)
-        .await
-        .map_err(|e| e.to_string());
-    log::debug!("handle_complete_withdrawal_request res: {:?}", res);
-    Ok(warp::reply::json(&res))
-}
-
-async fn handle_get_withdrawal_requests(
+async fn handle_get_withdrawals(
     withdrawal_dao: Arc<dyn WithdrawalDao>,
     project_id: String,
 ) -> Result<impl warp::Reply, Infallible> {
-    let res = withdrawal_service::load_withdrawal_requests(&*withdrawal_dao, &project_id)
+    let res = withdrawal_service::load_withdrawals(&*withdrawal_dao, &project_id)
         .await
         .map_err(|e| e.to_string());
-    log::debug!("handle_get_withdrawal_requests res: {:?}", res);
+    log::debug!("handle_get_withdrawals res: {:?}", res);
     Ok(warp::reply::json(&res))
 }
 
