@@ -203,6 +203,7 @@ dependencies = [
  "serde_json",
  "tokio",
  "tokio-postgres",
+ "uuid",
  "warp",
 ]
 
@@ -335,6 +336,7 @@ dependencies = [
  "serde",
  "tealdbg",
  "tinytemplate",
+ "uuid",
  "wasm-logger",
 ]
 
@@ -2283,6 +2285,15 @@ name = "utf8-ranges"
 version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b4ae116fef2b7fea257ed6440d3cfcff7f190865f170cdad00bb6465bf18ecba"
+
+[[package]]
+name = "uuid"
+version = "1.0.0-alpha.1"
+source = "git+https://github.com/uuid-rs/uuid?tag=1.0.0-alpha.1#b98c9586c1359a5cc354defe20d8ea31e58f29f0"
+dependencies = [
+ "getrandom 0.2.3",
+ "serde",
+]
 
 [[package]]
 name = "version_check"

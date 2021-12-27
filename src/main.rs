@@ -60,7 +60,7 @@ async fn main() -> Result<()> {
         .with(cors.clone())
         .with(warp::log("post save_project log"));
 
-    // project "view" for investors. TODO rename
+    // project "view" for UI. TODO rename
     let invest_project = warp::get()
         .and(warp::path!("invest" / String))
         .and(with_env(env.clone()))
@@ -71,19 +71,45 @@ async fn main() -> Result<()> {
         .with(cors.clone())
         .with(warp::log("get invest_project log"));
 
+    // project "view" for UI. TODO rename
+    let invest_project_with_uuid = warp::get()
+        .and(warp::path!("invest_with_uuid" / String))
+        .and(with_env(env.clone()))
+        .and(with_project_dao(project_dao.clone()))
+        .and_then(|id: String, env, dao: Arc<dyn ProjectDao>| async {
+            handle_get_project_for_users_with_uuid(dao, env, id).await
+        })
+        .with(cors.clone())
+        .with(warp::log("get invest_project_with_uuid log"));
+
     let load_project = warp::get()
         .and(warp::path!("project" / String))
-        .and(with_project_dao(project_dao))
+        .and(with_project_dao(project_dao.clone()))
         .and_then(|id: String, dao: Arc<dyn ProjectDao>| async {
             handle_get_project(dao, id).await
         })
         .with(cors.clone())
         .with(warp::log("get load_project log"));
 
-    warp::serve(save_project.or(invest_project).or(load_project))
-        // .run(([127, 0, 0, 1], 3030))
-        .run(([0, 0, 0, 0], 3030))
-        .await;
+    let load_project_with_uuid = warp::get()
+        .and(warp::path!("project_with_uuid" / String))
+        .and(with_project_dao(project_dao))
+        .and_then(|id: String, dao: Arc<dyn ProjectDao>| async {
+            handle_get_project_with_uuid(dao, id).await
+        })
+        .with(cors.clone())
+        .with(warp::log("get load_project log"));
+
+    warp::serve(
+        save_project
+            .or(invest_project)
+            .or(invest_project_with_uuid)
+            .or(load_project)
+            .or(load_project_with_uuid),
+    )
+    // .run(([127, 0, 0, 1], 3030))
+    .run(([0, 0, 0, 0], 3030))
+    .await;
 
     Ok(())
 }
@@ -121,11 +147,30 @@ async fn handle_get_project_for_users(
     project_for_users_json(res)
 }
 
+async fn handle_get_project_for_users_with_uuid(
+    project_dao: Arc<dyn ProjectDao>,
+    env: Env,
+    uuid: String,
+) -> Result<impl warp::Reply, Infallible> {
+    let res = project_service::load_project_for_users_with_uuid(&*project_dao, &env, &uuid).await;
+    log::debug!("handle_get_project_for_users res: {:?}", res);
+    project_for_users_json(res)
+}
+
 async fn handle_get_project(
     project_dao: Arc<dyn ProjectDao>,
     id: String,
 ) -> Result<impl warp::Reply, Infallible> {
     let res = project_service::load_project(&*project_dao, &id).await;
+    log::debug!("handle_get_project res: {:?}", res);
+    project_json(res)
+}
+
+async fn handle_get_project_with_uuid(
+    project_dao: Arc<dyn ProjectDao>,
+    uuid: String,
+) -> Result<impl warp::Reply, Infallible> {
+    let res = project_service::load_project_with_uuid(&*project_dao, &uuid).await;
     log::debug!("handle_get_project res: {:?}", res);
     project_json(res)
 }
