@@ -10,7 +10,7 @@ edition = "2018"
 core_ = { package = "core", path = "./core" } 
 # core_ = { package = "core", git = "ssh://git@github.com/ivanschuetz/capi-core.git", branch = "main" }
 
-# algonaut = { path = "/Users/ischuetz/dev/github/algonaut" }
+# algonaut = { path = "../../algonaut" }
 algonaut = { git = "https://github.com/manuelmauro/algonaut", branch = "main", features = ["rustls"], default-features = false }
 
 anyhow = "1.0"
