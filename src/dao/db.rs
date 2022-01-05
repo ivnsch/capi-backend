@@ -1,4 +1,4 @@
-use algonaut::core::{Address, CompiledTealBytes, MicroAlgos};
+use algonaut::core::{Address, CompiledTeal, MicroAlgos};
 use anyhow::{Error, Result};
 use data_encoding::BASE64;
 use tokio_postgres::{Client, NoTls, Row};
@@ -33,8 +33,8 @@ pub fn get_address(row: &Row, index: usize) -> Result<Address> {
     row.get::<_, String>(index).parse().map_err(Error::msg)
 }
 
-pub fn get_bytes(row: &Row, index: usize) -> Result<CompiledTealBytes> {
-    Ok(CompiledTealBytes(
+pub fn get_bytes(row: &Row, index: usize) -> Result<CompiledTeal> {
+    Ok(CompiledTeal(
         BASE64.decode(row.get::<_, String>(index).as_bytes())?,
     ))
 }

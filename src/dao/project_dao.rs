@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use algonaut::transaction::account::ContractAccount;
+use algonaut::transaction::contract_account::ContractAccount;
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
 use core_::flows::create_project::model::{CreateProjectSpecs, CreateSharesSpecs, Project};
@@ -38,13 +38,9 @@ impl ProjectDao for ProjectDaoImpl {
             investors_share TEXT NOT NULL,
             share_id TEXT NOT NULL,
             app_id TEXT NOT NULL,
-            invest_e TEXT NOT NULL,
             invest_b TEXT NOT NULL,
-            staking_e TEXT NOT NULL,
             staking_b TEXT NOT NULL,
-            central_e TEXT NOT NULL,
             central_b TEXT NOT NULL,
-            customer_e TEXT NOT NULL,
             customer_b TEXT NOT NULL,
             uuid TEXT NOT NULL
         );",
@@ -58,7 +54,7 @@ impl ProjectDao for ProjectDaoImpl {
     async fn save_project(&self, project: &Project) -> Result<String> {
         let id_rows = self.client
             .query(
-                "INSERT INTO project (name, creator, asset_price, token_name, share_count, investors_share, share_id, app_id, invest_e, invest_b, staking_e, staking_b, central_e, central_b, customer_e, customer_b, uuid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) RETURNING id;",
+                "INSERT INTO project (name, creator, asset_price, token_name, share_count, investors_share, share_id, app_id, invest_b, staking_b, central_b, customer_b, uuid) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id;",
                 &[
                     &project.specs.name,
                     &project.creator.to_string(),
@@ -68,13 +64,9 @@ impl ProjectDao for ProjectDaoImpl {
                     &project.specs.investors_share.to_string(),
                     &project.shares_asset_id.to_string(),
                     &project.central_app_id.to_string(),
-                    &project.invest_escrow.address.to_string(),
                     &BASE64.encode(&project.invest_escrow.program.0),
-                    &project.staking_escrow.address.to_string(),
                     &BASE64.encode(&project.staking_escrow.program.0),
-                    &project.central_escrow.address.to_string(),
                     &BASE64.encode(&project.central_escrow.program.0),
-                    &project.customer_escrow.address.to_string(),
                     &BASE64.encode(&project.customer_escrow.program.0),
                     &project.uuid.to_string(),
                 ],
@@ -95,7 +87,7 @@ impl ProjectDao for ProjectDaoImpl {
 
     async fn load_project(&self, id: i32) -> Result<Project> {
         let project_rows = self.client.query(
-            "SELECT name, asset_price, token_name, share_count, investors_share, creator, share_id, app_id, invest_e, invest_b, staking_e, staking_b, central_e, central_b, customer_e, customer_b, uuid FROM project WHERE id=$1;", 
+            "SELECT name, asset_price, token_name, share_count, investors_share, creator, share_id, app_id, invest_b, staking_b, central_b, customer_b, uuid FROM project WHERE id=$1;", 
             &[&id]).await?;
 
         let project_row = match project_rows.as_slice() {
@@ -116,30 +108,18 @@ impl ProjectDao for ProjectDaoImpl {
             creator: get_address(project_row, 5)?,
             shares_asset_id: get_u64(project_row, 6)?,
             central_app_id: get_u64(project_row, 7)?,
-            invest_escrow: ContractAccount {
-                address: get_address(project_row, 8)?,
-                program: get_bytes(project_row, 9)?,
-            },
-            staking_escrow: ContractAccount {
-                address: get_address(project_row, 10)?,
-                program: get_bytes(project_row, 11)?,
-            },
-            central_escrow: ContractAccount {
-                address: get_address(project_row, 12)?,
-                program: get_bytes(project_row, 13)?,
-            },
-            customer_escrow: ContractAccount {
-                address: get_address(project_row, 14)?,
-                program: get_bytes(project_row, 15)?,
-            },
-            uuid: project_row.get::<_, String>(16).parse()?,
+            invest_escrow: ContractAccount::new(get_bytes(project_row, 8)?),
+            staking_escrow: ContractAccount::new(get_bytes(project_row, 9)?),
+            central_escrow: ContractAccount::new(get_bytes(project_row, 10)?),
+            customer_escrow: ContractAccount::new(get_bytes(project_row, 11)?),
+            uuid: project_row.get::<_, String>(12).parse()?,
         })
     }
 
     // copy of load_project that queries with uuid - not refactoring yet as we'll remove load_project soon likely
     async fn load_project_with_uuid(&self, uuid: &Uuid) -> Result<Project> {
         let project_rows = self.client.query(
-            "SELECT name, asset_price, token_name, share_count, investors_share, creator, share_id, app_id, invest_e, invest_b, staking_e, staking_b, central_e, central_b, customer_e, customer_b, uuid FROM project WHERE uuid=$1;", 
+            "SELECT name, asset_price, token_name, share_count, investors_share, creator, share_id, app_id, invest_b, staking_b, central_b, customer_b, uuid FROM project WHERE uuid=$1;", 
             &[&uuid.to_string()]).await?;
 
         let project_row = match project_rows.as_slice() {
@@ -160,23 +140,11 @@ impl ProjectDao for ProjectDaoImpl {
             creator: get_address(project_row, 5)?,
             shares_asset_id: get_u64(project_row, 6)?,
             central_app_id: get_u64(project_row, 7)?,
-            invest_escrow: ContractAccount {
-                address: get_address(project_row, 8)?,
-                program: get_bytes(project_row, 9)?,
-            },
-            staking_escrow: ContractAccount {
-                address: get_address(project_row, 10)?,
-                program: get_bytes(project_row, 11)?,
-            },
-            central_escrow: ContractAccount {
-                address: get_address(project_row, 12)?,
-                program: get_bytes(project_row, 13)?,
-            },
-            customer_escrow: ContractAccount {
-                address: get_address(project_row, 14)?,
-                program: get_bytes(project_row, 15)?,
-            },
-            uuid: project_row.get::<_, String>(16).parse()?,
+            invest_escrow: ContractAccount::new(get_bytes(project_row, 8)?),
+            staking_escrow: ContractAccount::new(get_bytes(project_row, 9)?),
+            central_escrow: ContractAccount::new(get_bytes(project_row, 10)?),
+            customer_escrow: ContractAccount::new(get_bytes(project_row, 11)?),
+            uuid: project_row.get::<_, String>(12).parse()?,
         })
     }
 }
